@@ -6,7 +6,8 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const socketIo = require('socket.io');
-const autRouter  = require('./src/routes/aut.routes');
+const autRouter = require('./src/routes/aut.routes');
+const albumRouter = require('./src/routes/album.routes');
 
 const app = express();
 const server = http.createServer(app);
@@ -23,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public'))); // Sirve archivos está
 /* "RUTAS" */
 
 app.use(autRouter);
-
+app.use(albumRouter);
 
 // "INICIALIZACIÓN DE SERVIDOR"
 server.listen(PORT, () => {
