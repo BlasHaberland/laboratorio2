@@ -14,7 +14,7 @@ const upload = require('../config/multer.config'); // <- CONFIGURACION MULTER
 const imagenPerfilMiddleware = require('../middlewares/imagenPerfil.middleware');
 
 
-// MOSTRAR PERFIL DEL USUARIO 
+// MOSTRAR PERFIL DEL USUARIO AUTENTICADO
 router.get('/usuarios/mi-perfil',[autMiddleware], async (req, res) => { 
     try {
         const id_usuario = req.usuario.id;  
@@ -236,7 +236,7 @@ module.exports = router;
 // *- PUT /usuarios/mi-perfil/portafolio    -> Cambiar visibilidad del portafolio del usuario
 // *- DELETE /usuarios/mi-perfil             -> Eliminar cuenta del usuario autenticado
 // *- PUT /usuarios/mi-perfil/imagen         -> Cambiar imagen de perfil
-// !- (Opcional) GET /usuarios               -> Listar todos los usuarios (para administración)
 
+// !- (Opcional) GET /usuarios               -> Listar todos los usuarios (para administración)
 // !- GET /usuarios/:id_usuario              -> Obtener perfil público de otro usuario
 
