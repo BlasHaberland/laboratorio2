@@ -9,6 +9,7 @@ const socketIo = require('socket.io');
 const autRouter = require('./src/routes/aut.routes');
 const albumRouter = require('./src/routes/album.routes');
 const usuarioRouter = require('./src/routes/usuario.routes');
+const amistadRouter = require('./src/routes/amistades.routes');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public'))); // Sirve archivos está
 app.use(autRouter);
 app.use(albumRouter);
 app.use(usuarioRouter);
-
+app.use(amistadRouter)
 
 // "INICIALIZACIÓN DE SERVIDOR"
 server.listen(PORT, () => {

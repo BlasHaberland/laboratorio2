@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 
 const { initConnection } = require('../database/connection');
 const autMiddleware = require('../middlewares/aut.middleware');
@@ -155,8 +157,23 @@ router.put('/usuarios/mi-perfil/imagen', [autMiddleware, upload.single('imagen_p
     try {
         const id_usuario = req.usuario.id;
         const db = await initConnection();
-        const imagenPath = `/uploads/${req.file.filename}`; // ALMACENA LA RUTA DE LA IMAGEN
 
+        // 1. Obtener la imagen de perfil actual
+        const [usuario] = await db.query(
+            'SELECT imagen_perfil FROM usuarios WHERE id_usuario = ?', [id_usuario]
+        );
+        const imagenActual = usuario[0]?.imagen_perfil;
+
+        // 2. Eliminar la imagen anterior si existe y no es la imagen por defecto
+        if (imagenActual && imagenActual !== '/uploads/default.jpg') {
+            const rutaImagen = path.join(__dirname, '../../public', imagenActual);
+            if (fs.existsSync(rutaImagen)) {
+                fs.unlinkSync(rutaImagen);
+            }
+        }
+
+        // 3. Guardar la nueva imagen
+        const imagenPath = `/uploads/${req.file.filename}`;
         await db.query(
             'UPDATE usuarios SET imagen_perfil = ? WHERE id_usuario = ?', [imagenPath, id_usuario]
         );
@@ -165,7 +182,6 @@ router.put('/usuarios/mi-perfil/imagen', [autMiddleware, upload.single('imagen_p
             mensaje: 'Imagen de perfil actualizada correctamente',
             imagen_perfil: imagenPath
         });
-
 
     } catch (error) {
         res.status(500).json({
@@ -220,7 +236,7 @@ module.exports = router;
 // *- PUT /usuarios/mi-perfil/portafolio    -> Cambiar visibilidad del portafolio del usuario
 // *- DELETE /usuarios/mi-perfil             -> Eliminar cuenta del usuario autenticado
 // *- PUT /usuarios/mi-perfil/imagen         -> Cambiar imagen de perfil
+// !- (Opcional) GET /usuarios               -> Listar todos los usuarios (para administración)
 
 // !- GET /usuarios/:id_usuario              -> Obtener perfil público de otro usuario
-// !- (Opcional) GET /usuarios               -> Listar todos los usuarios (para administración)
 

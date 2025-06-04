@@ -53,6 +53,9 @@ router.get('/albumes/mis-albumes', [autMiddleware], async (req, res) => {
         });
     }
 })
+
+// OBTENER ALBUMES PUBLICOS
+
     
 
 module.exports = router;    
