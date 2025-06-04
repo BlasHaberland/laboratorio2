@@ -16,17 +16,15 @@ router.post('/aut/registro', [registroFormMiddleware], async (req, res) => {
 
         // hashear la clave antes de guardarla
         const hashClave = bcrypt.hashSync(clave, 10);
-        console.log('Clave hasheada:', hashClave);
-        console.log('Clave del usuario:', alias );
 
         const [usuario] = await db.query(
             'INSERT INTO usuarios (nombre, apellido, email, clave, alias) VALUES (?, ?, ?, ?, ?)', [nombre, apellido, email, hashClave, alias]
         );
 
-    res.status(201).json({
-        mensaje: 'Usuario creado correctamente',
-        usuario
-    }); 
+        res.status(201).json({
+            mensaje: 'Usuario creado correctamente',
+            usuario
+        }); 
     } catch (error) {
         console.error('Error al registrar el usuario:', error);
         res.status(500).json({
